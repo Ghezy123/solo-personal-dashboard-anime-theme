@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="profile">
+      <div class="avatar">
+        <img src="https://tse3.mm.bing.net/th/id/OIP.Zczsht-Cbj1U44nHFfaeSQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Avatar">
+        <span class="status-indicator"></span>
+      </div>
+      <h2 class="username">Ghezy</h2>
+      <p class="status-text">Gabut Bang</p>
+    </div>
+
+    <nav class="nav-menu">
+      <a href="#" id="nav-home" class="nav-item active">
+        <span class="nav-icon">🏠</span>
+        <span>Home</span>
+      </a>
+      <a href="#" id="nav-schedule" class="nav-item">
+        <span class="nav-icon">📅</span>
+        <span>Jadwal Kuliah</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="nav-icon">🔗</span>
+        <span>Links</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="nav-icon">⚙️</span>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <p>v1.0 — 2026</p>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    
+    <div id="view-home" class="view-section active">
+      <section class="top-section">
+        <div class="card welcome-card">
+          <h1 id="greeting">Selamat Datang</h1>
+          <p class="subtitle">Semoga harimu menyenangkan, Ghezy.</p>
+        </div>
+        <div class="card clock-card">
+          <div id="clock" class="digital-clock">00:00:00</div>
+          <p id="date-display" class="date-text"></p>
+        </div>
+      </section>
+
+      <section class="grid-section">
+        <div class="card todo-card">
+          <h3 class="card-title">📝 To-Do List</h3>
+          <div class="todo-input-wrapper">
+            <input type="text" id="todo-input" placeholder="Tambah tugas baru..." autocomplete="off">
+            <button id="add-todo-btn" aria-label="Tambah tugas">+</button>
+          </div>
+          <ul id="todo-list" class="todo-list"></ul>
+        </div>
+
+        <div class="card links-card">
+          <h3 class="card-title">🔗 Quick Links</h3>
+          <div class="links-grid">
+            <a href="https://youtube.com" target="_blank" class="link-item"><span class="link-icon">▶️</span><span>YouTube</span></a>
+            <a href="https://github.com" target="_blank" class="link-item"><span class="link-icon">🐙</span><span>GitHub</span></a>
+            <a href="https://tiktok.com" target="_blank" class="link-item"><span class="link-icon">📱</span><span>TikTok</span></a>
+            <a href="https://myanimelist.net" target="_blank" class="link-item"><span class="link-icon">🎬</span><span>MAL</span></a>
+            <a href="https://open.spotify.com" target="_blank" class="link-item"><span class="link-icon">🎵</span><span>Spotify</span></a>
+            <a href="https://notion.so" target="_blank" class="link-item"><span class="link-icon">📓</span><span>Notion</span></a>
+          </div>
+        </div>
+
+        <div class="card quote-card">
+          <h3 class="card-title">✨ Quote of the Moment</h3>
+          <blockquote id="anime-quote" class="quote-text"></blockquote>
+          <p id="quote-source" class="quote-source"></p>
+          <button id="new-quote-btn" class="btn-secondary">Quote Baru</button>
+        </div>
+      </section>
+
+      <section class="music-section">
+        <div class="card music-card">
+          <div class="music-info">
+            <span class="music-icon">🎧</span>
+            <div class="music-details">
+              <p class="track-title">Lo-Fi Chill Beats</p>
+              <p class="track-artist">Anime Vibes Radio</p>
+            </div>
+          </div>
+          <div class="music-controls">
+            <button class="control-btn" id="prev-btn" aria-label="Previous">⏮</button>
+            <button class="control-btn play-btn" id="play-btn" aria-label="Play">▶</button>
+            <button class="control-btn" id="next-btn" aria-label="Next">⏭</button>
+          </div>
+          <div class="volume-control">
+            <span>🔊</span>
+            <input type="range" id="volume-slider" min="0" max="100" value="70">
+          </div>
+        </div>
+      </section>
+    </div>
+
+  <div id="view-schedule" class="view-section" style="display: none;">
+      
+      <section class="top-section">
+        <div class="card welcome-card" style="display: flex; flex-direction: column; justify-content: center;">
+          <h1 style="font-family: var(--font-display); font-size: 2.2rem; background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Jadwal Kuliah</h1>
+          <p class="subtitle">S1 Sistem Informasi — 24 SKS</p>
+        </div>
+      </section>
+
+     <section id="schedule-container" style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1rem;">
+        
+  <div class="card day-card" id="day-1" style="display: flex; flex-direction: column; gap: 1rem;">
+    <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: var(--accent-secondary); border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; text-align: left; padding-left: 5px;">Senin</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+      <div class="class-item" style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
+        <div style="align-self: flex-start; background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary)); color: white; font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 4px;">07:30 - 10:00</div>
+        <h4 style="font-size: 0.95rem; color: var(--text-primary);">Enterprise Resource Planning</h4>
+        <div style="font-size: 0.8rem; color: var(--text-secondary); display: flex; justify-content: space-between;">
+          <span>📍 Ruang H 2.9</span>
+          <span style="color: var(--accent-tertiary); font-weight: 600;">3 SKS</span>
+        </div>
+      </div>
+      <div class="class-item" style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
+        <div style="align-self: flex-start; background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary)); color: white; font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 4px;">10:00 - 11:40</div>
+        <h4 style="font-size: 0.95rem; color: var(--text-primary);">Keamanan Informasi</h4>
+        <div style="font-size: 0.8rem; color: var(--text-secondary); display: flex; justify-content: space-between;">
+          <span>📍 Ruang H 2.9</span>
+          <span style="color: var(--accent-tertiary); font-weight: 600;">2 SKS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card day-card" id="day-2" style="display: flex; flex-direction: column; gap: 1rem;">
+    <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: var(--accent-secondary); border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; text-align: left; padding-left: 5px;">Selasa</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+      <div class="class-item" style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
+        <div style="align-self: flex-start; background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary)); color: white; font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 4px;">07:30 - 10:00</div>
+        <h4 style="font-size: 0.95rem; color: var(--text-primary);">Perancangan Basis Data</h4>
+        <div style="font-size: 0.8rem; color: var(--text-secondary); display: flex; justify-content: space-between;">
+          <span>📍 Ruang H 2.10</span>
+          <span style="color: var(--accent-tertiary); font-weight: 600;">3 SKS</span>
+        </div>
+      </div>
+      <div class="class-item" style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
+        <div style="align-self: flex-start; background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary)); color: white; font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 4px;">13:30 - 16:00</div>
+        <h4 style="font-size: 0.95rem; color: var(--text-primary);">Perencanaan Strategis TI</h4>
+        <div style="font-size: 0.8rem; color: var(--text-secondary); display: flex; justify-content: space-between;">
+          <span>📍 Ruang H 2.10</span>
+          <span style="color: var(--accent-tertiary); font-weight: 600;">3 SKS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card day-card" id="day-3" style="display: flex; flex-direction: column; gap: 1rem;">
+    <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: var(--accent-secondary); border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; text-align: left; padding-left: 5px;">Rabu</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+      <div class="class-item" style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
+        <div style="align-self: flex-start; background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary)); color: white; font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 4px;">07:30 - 09:10</div>
+        <h4 style="font-size: 0.95rem; color: var(--text-primary);">Rekayasa Perangkat Lunak</h4>
+        <div style="font-size: 0.8rem; color: var(--text-secondary); display: flex; justify-content: space-between;">
+          <span>📍 Ruang H 2.9</span>
+          <span style="color: var(--accent-tertiary); font-weight: 600;">2 SKS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card day-card" id="day-4" style="display: flex; flex-direction: column; gap: 1rem;">
+    <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: var(--accent-secondary); border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; text-align: left; padding-left: 5px;">Kamis</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+      <div class="class-item" style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
+        <div style="align-self: flex-start; background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary)); color: white; font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 4px;">07:30 - 10:00</div>
+        <h4 style="font-size: 0.95rem; color: var(--text-primary);">Pemrograman Web</h4>
+        <div style="font-size: 0.8rem; color: var(--text-secondary); display: flex; justify-content: space-between;">
+          <span>📍 Ruang H 1.8</span>
+          <span style="color: var(--accent-tertiary); font-weight: 600;">3 SKS</span>
+        </div>
+      </div>
+      <div class="class-item" style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
+        <div style="align-self: flex-start; background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary)); color: white; font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 4px;">13:30 - 16:00</div>
+        <h4 style="font-size: 0.95rem; color: var(--text-primary);">Sistem Penunjang Keputusan</h4>
+        <div style="font-size: 0.8rem; color: var(--text-secondary); display: flex; justify-content: space-between;">
+          <span>📍 Ruang H 1.8</span>
+          <span style="color: var(--accent-tertiary); font-weight: 600;">3 SKS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card day-card" id="day-5" style="display: flex; flex-direction: column; gap: 1rem;">
+    <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: var(--accent-secondary); border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; text-align: left; padding-left: 5px;">Jumat</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+      <div class="class-item" style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
+        <div style="align-self: flex-start; background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary)); color: white; font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 4px;">07:30 - 10:00</div>
+        <h4 style="font-size: 0.95rem; color: var(--text-primary);">Data Mining</h4>
+        <div style="font-size: 0.8rem; color: var(--text-secondary); display: flex; justify-content: space-between;">
+          <span>📍 Ruang H 1.10</span>
+          <span style="color: var(--accent-tertiary); font-weight: 600;">3 SKS</span>
+        </div>
+      </div>
+      <div class="class-item" style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
+        <div style="align-self: flex-start; background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary)); color: white; font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 4px;">10:00 - 11:40</div>
+        <h4 style="font-size: 0.95rem; color: var(--text-primary);">Analisis dan Visualisasi Data</h4>
+        <div style="font-size: 0.8rem; color: var(--text-secondary); display: flex; justify-content: space-between;">
+          <span>📍 Ruang H 2.7</span>
+          <span style="color: var(--accent-tertiary); font-weight: 600;">2 SKS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+  </main>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
