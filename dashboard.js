@@ -260,6 +260,9 @@ function initQuotes() {
 // ============================================
 // MUSIC PLAYER
 // ============================================
+// ============================================
+// MUSIC PLAYER (ACTUAL WORKING VERSION)
+// ============================================
 function initMusicPlayer() {
   const playBtn = document.getElementById('play-btn');
   const prevBtn = document.getElementById('prev-btn');
@@ -270,40 +273,104 @@ function initMusicPlayer() {
 
   if(!playBtn) return;
 
+  // 1. Bikin mesin pemutar audio
+  const audio = new Audio();
   let isPlaying = false;
 
+  // 2. Daftar lagu 
   const tracks = [
-    { title: 'Lo-Fi Chill Beats', artist: 'Anime Vibes Radio' },
-    { title: 'Peaceful Morning', artist: 'Studio Ghibli OST' },
-    { title: 'Night Drive', artist: 'City Pop Mix' },
-    { title: 'Rainy Day Café', artist: 'Relaxing BGM' },
-    { title: 'Summer Festival', artist: 'Japanese Traditional' }
+    { 
+      title: 'Chill Piano Electronic Music - Home', 
+      artist: 'Neutrin05', 
+      src: 'music/Chill Piano Electronic Music - Home by Neutrin05.mp3' 
+    },
+    { 
+      title: 'Melodic Lofi Chill - Alone', 
+      artist: 'Alex Productions', 
+      src: 'music/Melodic Lofi Chill - Alone by Alex Productions.mp3' 
+    },
+    { 
+      title: 'Infinity', 
+      artist: 'LEMMiNOMusic', 
+      src: 'music/@LEMMiNOMusic  - Infinity.mp3' 
+    },
+    { 
+      title: 'Ambient Music - Helen 2', 
+      artist: 'Nikos Spiliotis', 
+      src: 'music/Ambient Music - Helen 2 by Nikos Spiliotis.mp3' 
+    },
+    { 
+      title: 'Piano Music', 
+      artist: 'Jonny Easton', 
+      src: 'music/Piano Music - Purpose by Jonny Easton.mp3' 
+    },
+    { 
+      title: 'Chill Day', 
+      artist: 'Lakey Inspired', 
+      src: 'music/LAKEY INSPIRED - Chill Day.mp3' 
+    },
   ];
 
   let currentTrack = 0;
 
-  function updateTrackDisplay() {
-    trackTitle.textContent = tracks[currentTrack].title;
-    trackArtist.textContent = tracks[currentTrack].artist;
+  // Fungsi buat muat lagu ke mesin
+  function loadTrack(index) {
+    trackTitle.textContent = tracks[index].title;
+    trackArtist.textContent = tracks[index].artist;
+    audio.src = tracks[index].src;
+    audio.load();
   }
 
-  playBtn.addEventListener('click', () => {
-    isPlaying = !isPlaying;
-    playBtn.textContent = isPlaying ? '⏸' : '▶';
-    playBtn.setAttribute('aria-label', isPlaying ? 'Pause' : 'Play');
+  // Fungsi Play/Pause
+  function togglePlay() {
+    if (isPlaying) {
+      audio.pause();
+    } else {
+      audio.play();
+    }
+  }
+
+  // Event Listener pas audio beneran jalan/berhenti (biar UI sinkron)
+  audio.addEventListener('play', () => {
+    isPlaying = true;
+    playBtn.textContent = '⏸'; // Ganti icon ke Pause
   });
+
+  audio.addEventListener('pause', () => {
+    isPlaying = false;
+    playBtn.textContent = '▶'; // Ganti icon ke Play
+  });
+
+  // Otomatis ganti lagu kalau udah habis
+  audio.addEventListener('ended', () => {
+    nextBtn.click();
+  });
+
+  // Fungsi Tombol
+  playBtn.addEventListener('click', togglePlay);
 
   prevBtn.addEventListener('click', () => {
     currentTrack = (currentTrack - 1 + tracks.length) % tracks.length;
-    updateTrackDisplay();
+    loadTrack(currentTrack);
+    if(isPlaying) audio.play(); // Kalau lagi nge-play, langsung lanjut play
   });
 
   nextBtn.addEventListener('click', () => {
     currentTrack = (currentTrack + 1) % tracks.length;
-    updateTrackDisplay();
+    loadTrack(currentTrack);
+    if(isPlaying) audio.play();
   });
 
-  if(volumeSlider) volumeSlider.addEventListener('input', (e) => { console.log('Volume:', e.target.value); });
+  // Fungsi Volume Slider (0.0 sampai 1.0)
+  if(volumeSlider) {
+    audio.volume = volumeSlider.value / 100; // Sesuaikan dengan posisi awal slider
+    volumeSlider.addEventListener('input', (e) => { 
+      audio.volume = e.target.value / 100;
+    });
+  }
+
+  // Panggil lagu pertama pas web dibuka
+  loadTrack(currentTrack);
 }
 
 // ============================================
@@ -407,6 +474,7 @@ function initSpinner() {
     canvas.style.transform = `rotate(${currentRotation}deg)`;
 
     // Tunggu 4 detik (sesuai durasi animasi muter)
+   // Tunggu 4 detik (sesuai durasi animasi muter)
     setTimeout(() => {
       const actualRotation = currentRotation % 360;
       const sliceAngle = 360 / candidates.length;
@@ -418,6 +486,38 @@ function initSpinner() {
       resultText.innerHTML = `Pemenangnya: <span style="color:var(--accent-secondary); font-size:1.2rem;">${candidates[winnerIndex]}</span> 🎉`;
       spinBtn.disabled = false;
       updateBtn.disabled = false;
+
+      // ============================================
+      // EFEK MERCON / CONFETTI (BARU)
+      // ============================================
+      if (typeof confetti === "function") {
+        // Durasi ledakan: 3 detik
+        var duration = 3 * 1000;
+        var end = Date.now() + duration;
+
+        (function frame() {
+          // Tembakan dari sudut kiri bawah
+          confetti({
+            particleCount: 5,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0, y: 0.8 },
+            colors: colors // Pakai warna yang sama kayak rolet lu
+          });
+          // Tembakan dari sudut kanan bawah
+          confetti({
+            particleCount: 5,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1, y: 0.8 },
+            colors: colors
+          });
+
+          if (Date.now() < end) {
+            requestAnimationFrame(frame);
+          }
+        }());
+      }
     }, 4000);
   }
 
