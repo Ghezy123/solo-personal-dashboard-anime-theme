@@ -2,14 +2,92 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Personal Dashboard</title>
   <link rel="stylesheet" href="dashboard.css">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* Sembunyikan tombol menu di Laptop */
+    #menu-toggle {
+      display: none;
+    }
+
+    /* Pengaturan saat dibuka di HP */
+    @media (max-width: 768px) {
+      /* Mencegah layar geser ke kanan (putih-putih) */
+      html, body {
+        overflow-x: hidden !important;
+        width: 100%;
+      }
+
+      /* Tombol Menu Melayang */
+      #menu-toggle {
+        display: block;
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        z-index: 9999;
+        background: linear-gradient(135deg, #a855f7, #f472b6);
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-family: 'Orbitron', sans-serif;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      }
+
+      /* Sidebar ngumpet di kiri */
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 9000;
+        box-shadow: 10px 0 30px rgba(0,0,0,0.8);
+      }
+      
+      /* Sidebar muncul pas dipencet */
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      /* Konten utama menyesuaikan layar HP */
+      .main-content {
+        margin-left: 0 !important;
+        padding: 1rem !important;
+        padding-top: 70px !important; /* Ruang untuk tombol menu */
+        width: 100vw;
+        box-sizing: border-box;
+      }
+
+      /* Bikin semua grid jadi 1 kolom ke bawah */
+      .top-section, .grid-section, .links-grid {
+        grid-template-columns: 1fr !important;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Kotak jadwal biar nggak kepanjangan di layar HP */
+      .class-item {
+        width: 100% !important;
+        box-sizing: border-box;
+      }
+
+      /* Music Player berbaris ke bawah */
+      .music-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+      }
+    }
+  </style>
 </head>
 <body>
+
+  <button id="menu-toggle">☰ MENU</button>
 
   <aside class="sidebar">
     <div class="profile">
@@ -229,5 +307,33 @@
   </main>
 
   <script src="dashboard.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuBtn = document.getElementById('menu-toggle');
+      const sidebar = document.querySelector('.sidebar');
+      const navItems = document.querySelectorAll('.nav-item');
+
+      // Pas dipencet tombol MENU
+      if(menuBtn && sidebar) {
+        menuBtn.addEventListener('click', function() {
+          sidebar.classList.toggle('open');
+          if(sidebar.classList.contains('open')){
+            this.innerHTML = '✕ CLOSE';
+          } else {
+            this.innerHTML = '☰ MENU';
+          }
+        });
+      }
+
+      // Pas milih menu (Biar otomatis nutup lagi)
+      navItems.forEach(item => {
+        item.addEventListener('click', function() {
+          sidebar.classList.remove('open');
+          if(menuBtn) menuBtn.innerHTML = '☰ MENU';
+        });
+      });
+    });
+  </script>
 </body>
 </html>
