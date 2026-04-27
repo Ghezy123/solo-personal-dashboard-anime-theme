@@ -100,10 +100,18 @@
   color: var(--danger);
   font-size: 1rem;
   cursor: pointer;
-  opacity: 0;
+  opacity: 0.3;
   transition: opacity 0.2s ease;
 }
 
 .todo-item:hover .delete-btn {
   opacity: 1;
+}
+
+.todo-list::-webkit-scrollbar {
+    width: 4px;
+}
+.todo-list::-webkit-scrollbar-thumb {
+    background: var(--accent-primary);
+    border-radius: 10px;
 }

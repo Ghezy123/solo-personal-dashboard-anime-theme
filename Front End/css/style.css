@@ -487,3 +487,14 @@ body {
   }
 }
 
+/* Kita jinakkan emojinya biar gak kena efek gradasi */
+.emoji-fix {
+  -webkit-text-fill-color: initial !important; /* Balikin warnanya jadi asli */
+  background: none !important; /* Hapus background gradasi */
+  -webkit-background-clip: initial !important; /* Hapus clipping */
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif !important;
+  font-size: 0.8em; /* Kecilin dikit biar proporsional */
+  margin-left: 10px;
+  display: inline-block;
+  text-shadow: none !important; /* Hapus shadow biar gak silau */
+}

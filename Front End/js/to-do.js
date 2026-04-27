@@ -118,6 +118,3 @@ function escapeHTML(str) {
     div.textContent = str;
     return div.innerHTML;
 }
-
-// Inisialisasi dijalankan di main.js atau di sini juga boleh
-// initTodoList();

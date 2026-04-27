@@ -5,6 +5,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     // 1. SETUP IDENTITAS (Nama & Profil)
     const activeUser = localStorage.getItem('activeUser');
+    const userId = localStorage.getItem('userId'); // <--- Ambil ID unik user
+
+    // KUNCINYA DI SINI: Nama laci fotonya digabung sama ID (misal: profilePic_1)
+    const savedPic = localStorage.getItem(`profilePic_${userId}`); 
+
+    // Update Nama
     if (activeUser) {
         const sidebarName = document.getElementById('display-sidebar-name');
         const greetingName = document.getElementById('display-greeting-name');
@@ -12,14 +18,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (greetingName) greetingName.textContent = activeUser;
     }
 
+    // --- FIX BUG BENTROK: Balikin foto sesuai ID user yang login ---
+    if (savedPic) {
+        const profileImg = document.querySelector('.avatar img');
+        if (profileImg) {
+            profileImg.src = savedPic;
+        }
+    }
+
     // 2. NYALAIN SEMUA MESIN FITUR
     initNavigation(); 
     highlightToday(); 
-    initClock();
-    initGreeting();
+    initClock(); // (Sudah include greeting real-time)
     initTodoList();
     
-    // Panggil fitur lain (pastikan fungsinya sudah ada di file js lain)
+    // Fitur lain (Cek apakah fungsinya ada sebelum dipanggil)
     if (typeof initQuotes === 'function') initQuotes();
     if (typeof initMusicPlayer === 'function') initMusicPlayer();
     if (typeof initSpinner === 'function') initSpinner();
@@ -54,92 +67,53 @@ function initNavigation() {
     });
 }
 
-// ============================================
-// TO-DO LIST LOGIC (DATABASE VERSION)
-// ============================================
-function initTodoList() {
-    const todoInput = document.getElementById('todo-input');
-    const addBtn = document.getElementById('add-todo-btn');
-    const todoList = document.getElementById('todo-list');
-    const userId = localStorage.getItem('userId') || 1;
-
-    // FUNGSI TAMPILIN DATA (Dibikin global agar bisa di-refresh fungsi lain)
-    window.refreshTodoDisplay = async () => {
-        try {
-            const response = await fetch(`http://localhost:3000/api/todos/${userId}`);
-            const data = await response.json();
-            todoList.innerHTML = ''; 
-            
-            data.forEach(todo => {
-                const li = document.createElement('li');
-                li.className = `todo-item ${todo.status === 'completed' ? 'done' : ''}`;
-                li.innerHTML = `
-                    <div class="todo-content" onclick="toggleTodo(${todo.id}, '${todo.status}')">
-                        <div class="checkbox"></div>
-                        <span>${todo.task}</span>
-                    </div>
-                    <button class="delete-btn" onclick="deleteTodo(${todo.id})">❌</button>
-                `;
-                todoList.appendChild(li);
-            });
-        } catch (err) { console.error("Database error:", err); }
-    };
-
-    // FUNGSI TAMBAH
-    window.addTodo = async () => {
-        const task = todoInput.value.trim();
-        if (!task) return;
-        await fetch('http://localhost:3000/api/todos', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ user_id: userId, task: task })
-        });
-        todoInput.value = '';
-        window.refreshTodoDisplay();
-    };
-
-    // Tombol & Enter Listener
-    if (addBtn) addBtn.onclick = window.addTodo;
-    if (todoInput) {
-        todoInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') window.addTodo();
-        });
-    }
-
-    window.refreshTodoDisplay();
-}
-
-// LOGIKA TOGGLE & DELETE (Wajib Global)
-window.toggleTodo = async (id, status) => {
-    const newStatus = status === 'pending' ? 'completed' : 'pending';
-    await fetch(`http://localhost:3000/api/todos/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
-    });
-    window.refreshTodoDisplay();
-};
-
-window.deleteTodo = async (id) => {
-    if (!confirm("Hapus tugas?")) return;
-    await fetch(`http://localhost:3000/api/todos/${id}`, { method: 'DELETE' });
-    window.refreshTodoDisplay();
-};
 
 // ============================================
 // SYSTEM UTILITIES (Clock & Greeting)
 // ============================================
+
 function initClock() {
     const clock = document.getElementById('clock');
     const dateDisp = document.getElementById('date-display');
+    const greetEl = document.getElementById('greeting');
+    
     const opt = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
-    setInterval(() => {
+    const updateAll = () => {
         const now = new Date();
+        const hour = now.getHours();
+
+        // 1. Update Jam & Tanggal (Tetap pake textContent biar aman)
         if(clock) clock.textContent = now.toLocaleTimeString('id-ID');
         if(dateDisp) dateDisp.textContent = now.toLocaleDateString('id-ID', opt);
-    }, 1000);
+
+        // 2. Logika Greeting (Pecah Teks & Icon)
+        let text = "";
+        let icon = "";
+
+        if (hour >= 5 && hour < 12) {
+            text = 'Pagi'; icon = '☀️';
+        } else if (hour >= 12 && hour < 17) {
+            text = 'Siang'; icon = '🌤️';
+        } else if (hour >= 17 && hour < 21) {
+            text = 'Sore'; icon = '🌅';
+        } else {
+            text = 'Malam'; icon = '🌙';
+        }
+
+        // 3. Output ke HTML (Wajib pake innerHTML karena ada tag <span>)
+        if(greetEl) {
+            greetEl.innerHTML = `Selamat ${text} <span class="emoji-fix">${icon}</span>`;
+        }
+    };
+
+    // Jalankan sekali pas start biar gak nunggu 1 detik
+    updateAll();
+
+    // Jalankan setiap 1 detik biar sinkron terus
+    setInterval(updateAll, 1000);
 }
+
 
 function initGreeting() {
     const greetEl = document.getElementById('greeting');

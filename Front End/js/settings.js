@@ -4,7 +4,8 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   const activeUser = localStorage.getItem('activeUser');
-  let savedPic = localStorage.getItem('profilePic');
+  const userId = localStorage.getItem('userId');
+  let savedPic = localStorage.getItem(`profilePic_${userId}`);
 
   // --- 1. RENDER PROFIL (NAMA & FOTO) ---
   function renderProfile() {
@@ -63,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const result = await response.json();
 
         if (response.ok) {
-          localStorage.setItem('profilePic', result.profile_pic); 
+          localStorage.setItem(`profilePic_${userId}`, result.profile_pic);  
           savedPic = result.profile_pic; 
           renderProfile(); // Langsung render fotonya di layar
           alert("Gilaa, foto profil lu berhasil diganti! 🔥");
@@ -87,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Hapus semua tiket
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('activeUser');
-        localStorage.removeItem('profilePic');
         
         window.location.href = "login.html";
       }
