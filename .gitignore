@@ -1,0 +1,12 @@
+# Abaikan folder library (Wajib!)
+node_modules/
+
+# Abaikan file rahasia/password
+.env
+
+# Abaikan folder upload gambar
+Back End/server/uploads/*
+
+# Abaikan file sampah sistem
+.DS_Store
+Thumbs.db

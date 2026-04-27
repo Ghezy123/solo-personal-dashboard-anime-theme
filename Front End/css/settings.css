@@ -1,0 +1,55 @@
+/* ============================================
+   SETTINGS MODAL (POPUP) & LOGOUT
+   ============================================ */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(10, 10, 15, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center; justify-content: center;
+  z-index: 9999; /* Ditinggiin biar nutupin navbar HP */
+  opacity: 0; visibility: hidden;
+  transition: all 0.3s ease;
+}
+.modal-overlay.active {
+  opacity: 1; visibility: visible;
+}
+.modal-card {
+  background: rgba(30, 30, 45, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  width: 400px; max-width: 90%;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  transform: translateY(-20px);
+  transition: all 0.3s ease;
+}
+.modal-overlay.active .modal-card {
+  transform: translateY(0);
+}
+.modal-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 20px;
+}
+.modal-header h2 { font-size: 1.2rem; color: #fff; margin: 0; }
+.close-btn { background: none; border: none; color: #aaa; font-size: 1.2rem; cursor: pointer; }
+.close-btn:hover { color: #ff4757; }
+.modal-divider { border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0; }
+.avatar-setting { display: flex; align-items: center; justify-content: space-between; }
+.avatar-edit-wrapper { display: flex; align-items: center; gap: 15px; }
+#settings-avatar-preview { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+.upload-trigger-btn { 
+  background: #4a4e69; color: #fff; border: none; padding: 5px 10px; 
+  border-radius: 5px; cursor: pointer; font-family: 'Quicksand', sans-serif; font-weight: 600;
+}
+.upload-trigger-btn:hover { background: #6a4c93; }
+
+.logout-btn { 
+  width: 100%; padding: 10px; background: rgba(255, 71, 87, 0.1); 
+  color: #ff4757; border: 1px solid #ff4757; border-radius: 8px; 
+  cursor: pointer; font-family: 'Orbitron', sans-serif; font-weight: bold; transition: 0.3s; 
+}
+.logout-btn:hover { 
+  background: #ff4757; color: #fff; box-shadow: 0 0 15px rgba(255, 71, 87, 0.4);
+}

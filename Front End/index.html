@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="css/to-do.css">
   <link rel="stylesheet" href="css/music.css">
   <link rel="stylesheet" href="css/spinner.css">
+  <link rel="stylesheet" href="css/settings.css">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
@@ -87,18 +88,19 @@
       }
     }
   </style>
-</head>
+
+  </head>
 <body>
 
   <button id="menu-toggle">☰ MENU</button>
-
+  
   <aside class="sidebar">
     <div class="profile">
       <div class="avatar">
-        <img src="https://tse3.mm.bing.net/th/id/OIP.Zczsht-Cbj1U44nHFfaeSQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Avatar">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" id="profile-img-display" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
         <span class="status-indicator"></span>
       </div>
-      <h2 class="username">Ghezy</h2>
+      <h3 id="display-sidebar-name" class="profile-name">Ghezy</h3>
       <p class="status-text">Gabut Bang</p>
     </div>
 
@@ -115,7 +117,7 @@
         <span class="nav-icon">🎡</span>
         <span>Spin</span>
       </a>
-      <a href="#" class="nav-item">
+      <a href="#" id="btn-open-settings" class="nav-item">
         <span class="nav-icon">⚙️</span>
         <span>Settings</span>
       </a>
@@ -132,7 +134,7 @@
       <section class="top-section">
         <div class="card welcome-card">
           <h1 id="greeting">Selamat Datang</h1>
-          <p class="subtitle">Semoga harimu menyenangkan, Ghezy.</p>
+          <p class="greeting-sub">Semoga harimu menyenangkan, <span id="display-greeting-name">Ghezy</span>.</p>
         </div>
         <div class="card clock-card">
           <div id="clock" class="digital-clock">00:00:00</div>
@@ -319,7 +321,12 @@
         <div class="card spin-card">
           <div class="spin-layout">
             <div class="spin-input-area">
-              <textarea id="spin-candidates" placeholder="Masukkan kandidat di sini...&#10;Pisahkan dengan Enter.&#10;Contoh:&#10;Ghezy&#10;Temen 1&#10;Temen 2"></textarea>
+              <textarea id="spin-candidates" placeholder="Masukkan kandidat di sini...
+Pisahkan dengan Enter.
+Contoh:
+Ghezy
+Temen 1
+Temen 2"></textarea>
               <button id="update-wheel-btn" class="btn-secondary" style="margin-top: 10px; width: 100%;">Update Roda</button>
             </div>
 
@@ -338,18 +345,46 @@
 
   </main>
 
+  <div id="settings-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>⚙️ Settings</h2>
+        <button id="btn-close-settings" class="close-btn">✖</button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="setting-item avatar-setting">
+          <p style="font-weight: 600; margin-bottom: 10px;">Profile Picture</p>
+          <div class="avatar-edit-wrapper">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" id="settings-avatar-preview" alt="Avatar">
+            <button class="upload-trigger-btn" onclick="document.getElementById('avatar-upload').click()">Ganti Foto</button>
+            <input type="file" id="avatar-upload" accept="image/*" style="display: none;">
+          </div>
+        </div>
+
+        <hr class="modal-divider">
+
+        <div class="setting-item logout-setting">
+          <p style="font-weight: 600; margin-bottom: 10px;">Account Action</p>
+          <button id="btn-logout" class="logout-btn">🔴 LOGOUT DARI DASHBOARD</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="js/to-do.js"></script>
   <script src="js/quotes.js"></script>
   <script src="js/music.js"></script>
   <script src="js/spinner.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/settings.js"></script>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const menuBtn = document.getElementById('menu-toggle');
       const sidebar = document.querySelector('.sidebar');
-      const navItems = document.querySelectorAll('.nav-item');
+      const navItems = document.querySelectorAll('.nav-item:not(#btn-open-settings)'); // Biar tombol settings ga nutup menu klo dipencet di HP
 
       // Pas dipencet tombol MENU
       if(menuBtn && sidebar) {

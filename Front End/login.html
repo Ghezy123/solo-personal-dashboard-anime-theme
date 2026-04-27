@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Personal Dashboard Ghezy</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css"> 
+  <link rel="stylesheet" href="css/login.css">   
+</head>
+<body class="auth-body">
+
+  <div class="auth-container">
+    <div class="card auth-card">
+      
+      <div class="auth-header">
+        <div class="login-logo-wrapper">
+          <img src="img/Logo Ghezy.png" alt="Logo GZ" class="login-logo-img">
+        </div>
+        <h2 class="auth-title" id="form-title">Welcome Back</h2>
+        <p class="auth-subtitle" id="form-subtitle">Login to access your dashboard</p>
+      </div>
+
+      <div class="auth-toggle">
+        <button class="toggle-btn active" id="btn-show-login">Login</button>
+        <button class="toggle-btn" id="btn-show-register">Register</button>
+      </div>
+
+     <form id="login-form" class="auth-form active">
+        <div class="input-group">
+          <label for="login-user">Username</label>
+          <input type="text" id="login-user" placeholder="Enter your username" required>
+        </div>
+        <div class="input-group">
+          <label for="login-pass">Password Username</label>
+          <input type="password" id="login-pass" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="auth-submit-btn">LOGIN SEKARANG</button>
+      </form>
+
+      <form id="register-form" class="auth-form">
+        <div class="input-group">
+          <label for="reg-user">Username</label>
+          <input type="text" id="reg-user" placeholder="Choose a unique username" required>
+        </div>
+        <div class="input-group">
+          <label for="reg-email">Email</label>
+          <input type="email" id="reg-email" placeholder="Enter your valid email" required>
+        </div>
+        <div class="input-group">
+          <label for="reg-pass">Password Username</label>
+          <input type="password" id="reg-pass" placeholder="Create a password" required>
+        </div>
+        <div class="input-group">
+          <label for="reg-pass-confirm">Confirm Password</label>
+          <input type="password" id="reg-pass-confirm" placeholder="Confirm your password" required>
+        </div>
+        <button type="submit" class="auth-submit-btn">DAFTAR AKUN</button>
+      </form>
+
+      <div id="auth-alert" class="auth-alert"></div>
+    </div>
+  </div>
+
+  <script src="js/login.js"></script>
+</body>
+</html>

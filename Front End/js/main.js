@@ -3,131 +3,154 @@
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
-  initNavigation(); 
-  highlightToday(); 
-  initClock();
-  initGreeting();
-  initTodoList();
-  initQuotes();
-  initMusicPlayer();
-  initSpinner(); // <--- BARU: Menyalakan mesin Spin The Wheel
+    // 1. SETUP IDENTITAS (Nama & Profil)
+    const activeUser = localStorage.getItem('activeUser');
+    if (activeUser) {
+        const sidebarName = document.getElementById('display-sidebar-name');
+        const greetingName = document.getElementById('display-greeting-name');
+        if (sidebarName) sidebarName.textContent = activeUser;
+        if (greetingName) greetingName.textContent = activeUser;
+    }
+
+    // 2. NYALAIN SEMUA MESIN FITUR
+    initNavigation(); 
+    highlightToday(); 
+    initClock();
+    initGreeting();
+    initTodoList();
+    
+    // Panggil fitur lain (pastikan fungsinya sudah ada di file js lain)
+    if (typeof initQuotes === 'function') initQuotes();
+    if (typeof initMusicPlayer === 'function') initMusicPlayer();
+    if (typeof initSpinner === 'function') initSpinner();
 });
 
 // ============================================
-// NAVIGATION & SCHEDULE LOGIC
+// NAVIGATION LOGIC (The DRY Way)
 // ============================================
 function initNavigation() {
-  const navHome = document.getElementById('nav-home');
-  const navSchedule = document.getElementById('nav-schedule');
-  const navSpin = document.getElementById('nav-spin'); // Tambahan buat Spin
-  
-  const viewHome = document.getElementById('view-home');
-  const viewSchedule = document.getElementById('view-schedule');
-  const viewSpin = document.getElementById('view-spin'); // Tambahan buat Spin
+    const pages = ['home', 'schedule', 'spin'];
+    
+    pages.forEach(page => {
+        const navBtn = document.getElementById(`nav-${page}`);
+        const viewSection = document.getElementById(`view-${page}`);
+        
+        if (navBtn && viewSection) {
+            navBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Reset semua halaman & menu
+                pages.forEach(p => {
+                    document.getElementById(`view-${p}`).style.display = 'none';
+                    document.getElementById(`nav-${p}`).classList.remove('active');
+                });
 
-  function switchPage(page) {
-    // Sembunyikan semua halaman dulu
-    viewHome.style.display = 'none';
-    viewSchedule.style.display = 'none';
-    viewSpin.style.display = 'none';
+                // Aktifkan yang dipilih
+                viewSection.style.display = (page === 'schedule') ? 'block' : 'flex';
+                navBtn.classList.add('active');
+                if (page === 'schedule') highlightToday();
+            });
+        }
+    });
+}
 
-    // Hilangkan semua highlight menu
-    navHome.classList.remove('active');
-    navSchedule.classList.remove('active');
-    navSpin.classList.remove('active');
+// ============================================
+// TO-DO LIST LOGIC (DATABASE VERSION)
+// ============================================
+function initTodoList() {
+    const todoInput = document.getElementById('todo-input');
+    const addBtn = document.getElementById('add-todo-btn');
+    const todoList = document.getElementById('todo-list');
+    const userId = localStorage.getItem('userId') || 1;
 
-    // Tampilkan halaman dan menu yang sesuai
-    if (page === 'home') {
-      viewHome.style.display = 'flex';
-      navHome.classList.add('active');
-    } else if (page === 'schedule') {
-      viewSchedule.style.display = 'flex';
-      navSchedule.classList.add('active');
-      highlightToday(); 
-    } else if (page === 'spin') {
-      viewSpin.style.display = 'flex';
-      navSpin.classList.add('active');
+    // FUNGSI TAMPILIN DATA (Dibikin global agar bisa di-refresh fungsi lain)
+    window.refreshTodoDisplay = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/todos/${userId}`);
+            const data = await response.json();
+            todoList.innerHTML = ''; 
+            
+            data.forEach(todo => {
+                const li = document.createElement('li');
+                li.className = `todo-item ${todo.status === 'completed' ? 'done' : ''}`;
+                li.innerHTML = `
+                    <div class="todo-content" onclick="toggleTodo(${todo.id}, '${todo.status}')">
+                        <div class="checkbox"></div>
+                        <span>${todo.task}</span>
+                    </div>
+                    <button class="delete-btn" onclick="deleteTodo(${todo.id})">❌</button>
+                `;
+                todoList.appendChild(li);
+            });
+        } catch (err) { console.error("Database error:", err); }
+    };
+
+    // FUNGSI TAMBAH
+    window.addTodo = async () => {
+        const task = todoInput.value.trim();
+        if (!task) return;
+        await fetch('http://localhost:3000/api/todos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: userId, task: task })
+        });
+        todoInput.value = '';
+        window.refreshTodoDisplay();
+    };
+
+    // Tombol & Enter Listener
+    if (addBtn) addBtn.onclick = window.addTodo;
+    if (todoInput) {
+        todoInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') window.addTodo();
+        });
     }
-  }
 
-  if (navHome) {
-    navHome.addEventListener('click', (e) => {
-      e.preventDefault();
-      switchPage('home');
-    });
-  }
+    window.refreshTodoDisplay();
+}
 
-  if (navSchedule) {
-    navSchedule.addEventListener('click', (e) => {
-      e.preventDefault();
-      switchPage('schedule');
+// LOGIKA TOGGLE & DELETE (Wajib Global)
+window.toggleTodo = async (id, status) => {
+    const newStatus = status === 'pending' ? 'completed' : 'pending';
+    await fetch(`http://localhost:3000/api/todos/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
     });
-  }
+    window.refreshTodoDisplay();
+};
 
-  if (navSpin) {
-    navSpin.addEventListener('click', (e) => {
-      e.preventDefault();
-      switchPage('spin');
-    });
-  }
+window.deleteTodo = async (id) => {
+    if (!confirm("Hapus tugas?")) return;
+    await fetch(`http://localhost:3000/api/todos/${id}`, { method: 'DELETE' });
+    window.refreshTodoDisplay();
+};
+
+// ============================================
+// SYSTEM UTILITIES (Clock & Greeting)
+// ============================================
+function initClock() {
+    const clock = document.getElementById('clock');
+    const dateDisp = document.getElementById('date-display');
+    const opt = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
+    setInterval(() => {
+        const now = new Date();
+        if(clock) clock.textContent = now.toLocaleTimeString('id-ID');
+        if(dateDisp) dateDisp.textContent = now.toLocaleDateString('id-ID', opt);
+    }, 1000);
+}
+
+function initGreeting() {
+    const greetEl = document.getElementById('greeting');
+    const hour = new Date().getHours();
+    let text = (hour < 12) ? 'Pagi ☀️' : (hour < 17) ? 'Siang 🌤️' : (hour < 21) ? 'Sore 🌅' : 'Malam 🌙';
+    if(greetEl) greetEl.textContent = `Selamat ${text}`;
 }
 
 function highlightToday() {
-  const currentDay = new Date().getDay();
-  
-  document.querySelectorAll('.day-card').forEach(card => {
-    card.classList.remove('today-active');
-  });
-
-  if (currentDay >= 1 && currentDay <= 5) {
-    const todayCard = document.getElementById(`day-${currentDay}`);
-    if (todayCard) {
-      todayCard.classList.add('today-active');
-    }
-  }
-}
-
-// ============================================
-// DIGITAL CLOCK
-// ============================================
-function initClock() {
-  const clockElement = document.getElementById('clock');
-  const dateElement = document.getElementById('date-display');
-
-  function updateClock() {
-    const now = new Date();
-
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
-    if(clockElement) clockElement.textContent = `${hours}:${minutes}:${seconds}`;
-
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    if(dateElement) dateElement.textContent = now.toLocaleDateString('id-ID', options);
-  }
-
-  updateClock();
-  setInterval(updateClock, 1000);
-}
-
-// ============================================
-// DYNAMIC GREETING
-// ============================================
-function initGreeting() {
-  const greetingElement = document.getElementById('greeting');
-
-  function updateGreeting() {
-    const hour = new Date().getHours();
-    let greeting;
-
-    if (hour >= 5 && hour < 12) greeting = 'Selamat Pagi ☀️';
-    else if (hour >= 12 && hour < 17) greeting = 'Selamat Siang 🌤️';
-    else if (hour >= 17 && hour < 21) greeting = 'Selamat Sore 🌅';
-    else greeting = 'Selamat Malam 🌙';
-
-    if(greetingElement) greetingElement.textContent = greeting;
-  }
-
-  updateGreeting();
-  setInterval(updateGreeting, 60000);
+    const currentDay = new Date().getDay();
+    document.querySelectorAll('.day-card').forEach(c => c.classList.remove('today-active'));
+    const today = document.getElementById(`day-${currentDay}`);
+    if (today) today.classList.add('today-active');
 }
