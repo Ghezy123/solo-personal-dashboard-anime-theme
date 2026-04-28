@@ -4,11 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Personal Dashboard Ghezy</title>
+  
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/to-do.css">
   <link rel="stylesheet" href="css/music.css">
   <link rel="stylesheet" href="css/spinner.css">
   <link rel="stylesheet" href="css/settings.css">
+  <link rel="stylesheet" href="css/game.css"> 
+  <link rel="stylesheet" href="css/sidebar.css"> 
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
@@ -19,15 +22,45 @@
       display: none;
     }
 
+    /* CSS DROPDOWN GAMES (Tambahan Baru) */
+    .sub-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      margin: 0 10px;
+    }
+
+    .sub-menu.active {
+      max-height: 200px; 
+      margin-bottom: 10px;
+      border: 1px solid var(--glass-border);
+    }
+
+    .sub-item {
+      padding-left: 35px !important;
+      font-size: 0.85rem !important;
+      border: none !important;
+    }
+
+    .dropdown-arrow {
+      margin-left: auto;
+      font-size: 0.7rem;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-item.open .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+
     /* Pengaturan saat dibuka di HP */
     @media (max-width: 768px) {
-      /* Mencegah layar geser ke kanan (putih-putih) */
       html, body {
         overflow-x: hidden !important;
         width: 100%;
       }
 
-      /* Tombol Menu Melayang */
       #menu-toggle {
         display: block;
         position: fixed;
@@ -45,7 +78,6 @@
         box-shadow: 0 4px 15px rgba(0,0,0,0.5);
       }
 
-      /* Sidebar ngumpet di kiri */
       .sidebar {
         transform: translateX(-100%);
         transition: transform 0.3s ease;
@@ -53,12 +85,10 @@
         box-shadow: 10px 0 30px rgba(0,0,0,0.8);
       }
       
-      /* Sidebar muncul pas dipencet */
       .sidebar.open {
         transform: translateX(0);
       }
 
-      /* Konten utama menyesuaikan layar HP */
       .main-content {
         margin-left: 0 !important;
         padding: 1rem !important;
@@ -67,20 +97,17 @@
         box-sizing: border-box;
       }
 
-      /* Bikin semua grid jadi 1 kolom ke bawah */
       .top-section, .grid-section, .links-grid {
         grid-template-columns: 1fr !important;
         display: flex;
         flex-direction: column;
       }
 
-      /* Kotak jadwal biar nggak kepanjangan di layar HP */
       .class-item {
         width: 100% !important;
         box-sizing: border-box;
       }
 
-      /* Music Player berbaris ke bawah */
       .music-card {
         flex-direction: column;
         text-align: center;
@@ -88,8 +115,7 @@
       }
     }
   </style>
-
-  </head>
+</head>
 <body>
 
   <button id="menu-toggle">☰ MENU</button>
@@ -97,7 +123,7 @@
   <aside class="sidebar">
     <div class="profile">
       <div class="avatar">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" id="profile-img-display" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+        <img src="img/icon kosong.png" id="profile-img-display" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
         <span class="status-indicator"></span>
       </div>
       <h3 id="display-sidebar-name" class="profile-name">Ghezy</h3>
@@ -117,6 +143,21 @@
         <span class="nav-icon">🎡</span>
         <span>Spin</span>
       </a>
+
+      <div class="nav-group">
+        <a href="#" id="nav-games-toggle" class="nav-item">
+          <span class="nav-icon">🎮</span>
+          <span>Games</span>
+          <span class="dropdown-arrow">▼</span>
+        </a>
+        <div class="sub-menu" id="games-submenu">
+          <a href="#" id="nav-blockblast" class="nav-item sub-item">
+            <span class="nav-icon">🧩</span>
+            <span>Block Blitz</span>
+          </a>
+        </div>
+      </div>
+
       <a href="#" id="btn-open-settings" class="nav-item">
         <span class="nav-icon">⚙️</span>
         <span>Settings</span>
@@ -203,7 +244,6 @@
       </section>
 
       <section id="schedule-container" style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1rem;">
-        
         <div class="card day-card" id="day-1" style="display: flex; flex-direction: column; gap: 1rem;">
           <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: var(--accent-secondary); border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; text-align: left; padding-left: 5px;">Senin</h3>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
@@ -225,7 +265,6 @@
             </div>
           </div>
         </div>
-
         <div class="card day-card" id="day-2" style="display: flex; flex-direction: column; gap: 1rem;">
           <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: var(--accent-secondary); border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; text-align: left; padding-left: 5px;">Selasa</h3>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
@@ -247,7 +286,6 @@
             </div>
           </div>
         </div>
-
         <div class="card day-card" id="day-3" style="display: flex; flex-direction: column; gap: 1rem;">
           <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: var(--accent-secondary); border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; text-align: left; padding-left: 5px;">Rabu</h3>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
@@ -261,7 +299,6 @@
             </div>
           </div>
         </div>
-
         <div class="card day-card" id="day-4" style="display: flex; flex-direction: column; gap: 1rem;">
           <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: var(--accent-secondary); border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; text-align: left; padding-left: 5px;">Kamis</h3>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
@@ -283,7 +320,6 @@
             </div>
           </div>
         </div>
-
         <div class="card day-card" id="day-5" style="display: flex; flex-direction: column; gap: 1rem;">
           <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: var(--accent-secondary); border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; text-align: left; padding-left: 5px;">Jumat</h3>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
@@ -305,7 +341,6 @@
             </div>
           </div>
         </div>
-
       </section>
     </div>
 
@@ -321,15 +356,9 @@
         <div class="card spin-card">
           <div class="spin-layout">
             <div class="spin-input-area">
-              <textarea id="spin-candidates" placeholder="Masukkan kandidat di sini...
-Pisahkan dengan Enter.
-Contoh:
-Ghezy
-Temen 1
-Temen 2"></textarea>
+              <textarea id="spin-candidates" placeholder="Masukkan kandidat di sini..."></textarea>
               <button id="update-wheel-btn" class="btn-secondary" style="margin-top: 10px; width: 100%;">Update Roda</button>
             </div>
-
             <div class="spin-wheel-area">
               <div class="wheel-container">
                 <div class="wheel-pointer">▼</div>
@@ -341,6 +370,44 @@ Temen 2"></textarea>
           </div>
         </div>
       </section>
+    </div>
+
+    <div id="view-blockblast" class="view-section" style="display: none;">
+      <section class="top-section">
+        <div class="card welcome-card">
+          <h1 style="font-family: var(--font-display); font-size: 2.2rem; background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Block Blast Royale</h1>
+          <p class="subtitle">Main santai, skor tinggi, ranking 1!</p>
+        </div>
+      </section>
+
+      <div class="game-layout">
+        <div class="game-container card">
+            <div class="score-board">
+                <div class="score-box">
+                    <p class="label">SCORE</p>
+                    <span id="current-score">0</span>
+                </div>
+                <div class="score-box">
+                    <p class="label">BEST</p>
+                    <span id="best-score">0</span>
+                </div>
+            </div>
+            <div id="game-board" class="grid-board"></div>
+        </div>
+
+        <div class="game-sidebar">
+            <div class="shapes-container card">
+                <p class="small-label">NEXT SHAPES</p>
+                <div id="shape-options" class="shapes-pick"></div>
+            </div>
+            <div class="leaderboard-card card">
+                <h3 class="card-title">🏆 Global Rank</h3>
+                <ul id="game-leaderboard" class="rank-list">
+                    <li class="rank-item">Memuat data...</li>
+                </ul>
+            </div>
+        </div>
+      </div>
     </div>
 
   </main>
@@ -356,8 +423,14 @@ Temen 2"></textarea>
         <div class="setting-item avatar-setting">
           <p style="font-weight: 600; margin-bottom: 10px;">Profile Picture</p>
           <div class="avatar-edit-wrapper">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" id="settings-avatar-preview" alt="Avatar">
-            <button class="upload-trigger-btn" onclick="document.getElementById('avatar-upload').click()">Ganti Foto</button>
+            <img src="img/icon kosong.png" id="settings-avatar-preview" alt="Avatar">
+            
+            <div class="avatar-actions" style="display: flex; gap: 10px; margin-top: 15px; justify-content: center;">
+                <button class="upload-trigger-btn" onclick="document.getElementById('avatar-upload').click()">Ganti Foto</button>
+                
+                <button id="btn-remove-avatar" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; padding: 8px 15px; border-radius: var(--radius-sm); cursor: pointer; font-family: var(--font-body); font-weight: 600; transition: all 0.3s ease;">Hapus</button>
+            </div>
+            
             <input type="file" id="avatar-upload" accept="image/*" style="display: none;">
           </div>
         </div>
@@ -377,6 +450,7 @@ Temen 2"></textarea>
   <script src="js/quotes.js"></script>
   <script src="js/music.js"></script>
   <script src="js/spinner.js"></script>
+  <script src="js/game.js"></script>
   <script src="js/main.js"></script>
   <script src="js/settings.js"></script>
 
@@ -384,21 +458,25 @@ Temen 2"></textarea>
     document.addEventListener('DOMContentLoaded', function() {
       const menuBtn = document.getElementById('menu-toggle');
       const sidebar = document.querySelector('.sidebar');
-      const navItems = document.querySelectorAll('.nav-item:not(#btn-open-settings)'); // Biar tombol settings ga nutup menu klo dipencet di HP
+      const navItems = document.querySelectorAll('.nav-item:not(#btn-open-settings):not(#nav-games-toggle)');
+      const gamesToggle = document.getElementById('nav-games-toggle');
+      const gamesSubmenu = document.getElementById('games-submenu');
 
-      // Pas dipencet tombol MENU
-      if(menuBtn && sidebar) {
-        menuBtn.addEventListener('click', function() {
-          sidebar.classList.toggle('open');
-          if(sidebar.classList.contains('open')){
-            this.innerHTML = '✕ CLOSE';
-          } else {
-            this.innerHTML = '☰ MENU';
-          }
+      if(gamesToggle) {
+        gamesToggle.addEventListener('click', function(e) {
+          e.preventDefault();
+          this.classList.toggle('open');
+          gamesSubmenu.classList.toggle('active');
         });
       }
 
-      // Pas milih menu (Biar otomatis nutup lagi)
+      if(menuBtn && sidebar) {
+        menuBtn.addEventListener('click', function() {
+          sidebar.classList.toggle('open');
+          this.innerHTML = sidebar.classList.contains('open') ? '✕ CLOSE' : '☰ MENU';
+        });
+      }
+
       navItems.forEach(item => {
         item.addEventListener('click', function() {
           sidebar.classList.remove('open');

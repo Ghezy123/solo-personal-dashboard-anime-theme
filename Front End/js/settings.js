@@ -94,3 +94,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const btnRemoveAvatar = document.getElementById('btn-remove-avatar');
+    const profileImg = document.getElementById('profile-img-display'); // Foto di Sidebar
+    const previewImg = document.getElementById('settings-avatar-preview'); // Foto di Settings
+    
+    // Alamat foto default lu
+    const defaultAvatar = 'img/icon kosong.png';
+
+    if (btnRemoveAvatar) {
+        btnRemoveAvatar.addEventListener('click', function() {
+            // Munculin konfirmasi biar gak typo pencet
+            if (confirm('Balikin ke foto profil default?')) {
+                
+                // 1. Ubah tampilan secara instan
+                profileImg.src = defaultAvatar;
+                previewImg.src = defaultAvatar;
+
+                // 2. Hapus data dari LocalStorage
+                // (Pastiin 'user-avatar' ini namanya sama dengan yang lu pake buat simpen foto)
+                localStorage.removeItem('user-avatar');
+
+                alert('Foto profil berhasil di-reset!');
+            }
+        });
+    }
+});

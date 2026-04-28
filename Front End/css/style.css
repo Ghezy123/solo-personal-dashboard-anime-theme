@@ -1,6 +1,6 @@
 /* ============================================
-   CSS RESET & BASE
-   ============================================ */
+    CSS RESET & BASE
+    ============================================ */
 *, *::before, *::after {
   margin: 0;
   padding: 0;
@@ -60,8 +60,8 @@ body {
 }
 
 /* ============================================
-   GLASSMORPHISM CARD
-   ============================================ */
+    GLASSMORPHISM CARD
+    ============================================ */
 .card {
   background: var(--glass-bg);
   backdrop-filter: blur(20px);
@@ -93,128 +93,8 @@ body {
 }
 
 /* ============================================
-   SIDEBAR
-   ============================================ */
-.sidebar {
-  width: var(--sidebar-width);
-  min-height: 100vh;
-  background: var(--glass-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-right: 1px solid var(--glass-border);
-  display: flex;
-  flex-direction: column;
-  padding: 2rem 1.25rem;
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 100;
-}
-
-.profile {
-  text-align: center;
-  margin-bottom: 2.5rem;
-}
-
-.avatar {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  margin: 0 auto 1rem;
-}
-
-.avatar img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid var(--accent-primary);
-  box-shadow: 0 0 20px var(--accent-glow);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.avatar:hover img {
-  transform: scale(1.05);
-  box-shadow: 0 0 30px var(--accent-glow);
-}
-
-.status-indicator {
-  position: absolute;
-  bottom: 6px;
-  right: 6px;
-  width: 16px;
-  height: 16px;
-  background: var(--success);
-  border-radius: 50%;
-  border: 3px solid var(--bg-dark);
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(1.1); }
-}
-
-.username {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: 0.25rem;
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.status-text {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-
-/* Navigation */
-.nav-menu {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.875rem 1rem;
-  border-radius: var(--radius-sm);
-  color: var(--text-secondary);
-  text-decoration: none;
-  font-weight: 600;
-  transition: all 0.25s ease;
-}
-
-.nav-item:hover,
-.nav-item.active {
-  background: rgba(168, 85, 247, 0.15);
-  color: var(--text-primary);
-}
-
-.nav-item.active {
-  border-left: 3px solid var(--accent-primary);
-  box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
-}
-
-.nav-icon {
-  font-size: 1.1rem;
-}
-
-.sidebar-footer {
-  margin-top: auto;
-  text-align: center;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-/* ============================================
-   SPA VIEW TRANSITIONS
-   ============================================ */
+    SPA VIEW TRANSITIONS
+    ============================================ */
 .view-section {
   display: none;
   flex-direction: column;
@@ -232,8 +112,8 @@ body {
 }
 
 /* ============================================
-   MAIN CONTENT
-   ============================================ */
+    MAIN CONTENT
+    ============================================ */
 .main-content {
   flex: 1;
   margin-left: var(--sidebar-width);
@@ -373,8 +253,8 @@ body {
 }
 
 /* ============================================
-   SCHEDULE PAGE SPECIFIC
-   ============================================ */
+    SCHEDULE PAGE SPECIFIC
+    ============================================ */
 .day-card {
   transition: all 0.4s ease;
 }
@@ -399,8 +279,8 @@ body {
 }
 
 /* ============================================
-   SCROLLBAR
-   ============================================ */
+    GLOBAL SCROLLBAR
+    ============================================ */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -415,8 +295,8 @@ body {
 }
 
 /* ============================================
-   RESPONSIVE DESIGN (LAYOUT GLOBAL)
-   ============================================ */
+    RESPONSIVE DESIGN (LAYOUT GLOBAL)
+    ============================================ */
 @media (max-width: 1100px) {
   .grid-section {
     grid-template-columns: repeat(2, 1fr);
@@ -442,15 +322,6 @@ body {
 }
 
 @media (max-width: 768px) {
-  .sidebar {
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-  }
-  
-  .sidebar.open {
-    transform: translateX(0);
-  }
-  
   .main-content {
     margin-left: 0;
     padding: 1.5rem;
@@ -487,14 +358,14 @@ body {
   }
 }
 
-/* Kita jinakkan emojinya biar gak kena efek gradasi */
+/* Emoji Fix */
 .emoji-fix {
-  -webkit-text-fill-color: initial !important; /* Balikin warnanya jadi asli */
-  background: none !important; /* Hapus background gradasi */
-  -webkit-background-clip: initial !important; /* Hapus clipping */
+  -webkit-text-fill-color: initial !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
   font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif !important;
-  font-size: 0.8em; /* Kecilin dikit biar proporsional */
+  font-size: 0.8em;
   margin-left: 10px;
   display: inline-block;
-  text-shadow: none !important; /* Hapus shadow biar gak silau */
+  text-shadow: none !important;
 }
