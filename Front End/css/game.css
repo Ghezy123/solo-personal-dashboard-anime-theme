@@ -1,0 +1,170 @@
+/* ================================================================
+   BLOCK BLITZ - GAME VIEW STYLES (STABLE VERSION)
+   ================================================================ */
+
+:root {
+    --block-size: 50px; 
+}
+
+/* 1. HEADER BANNER */
+#view-blockblast .top-section {
+    width: 100%;
+    max-width: 100%; 
+    margin-bottom: 20px;
+}
+
+#view-blockblast .welcome-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 30px !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+/* 2. LAYOUT UTAMA */
+.view-section#view-blockblast {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.game-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px; 
+    gap: 20px;
+    align-items: start;
+    width: 100%;
+}
+
+/* 3. CONTAINER BOARD & SCORE */
+.game-container.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 0 !important;
+    width: 100%;
+}
+
+.score-board {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: calc((var(--block-size) * 8) + (4px * 7) + 20px); 
+    margin-bottom: 20px;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+.score-box {
+    width: 130px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    text-align: center;
+    backdrop-filter: blur(5px);
+}
+
+.score-box .label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem;
+    color: var(--accent-tertiary);
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+.score-box span {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+/* 4. GRID BOARD */
+.grid-board {
+    display: grid;
+    grid-template-columns: repeat(8, var(--block-size));
+    grid-template-rows: repeat(8, var(--block-size));
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    width: fit-content; 
+    aspect-ratio: 1 / 1;
+    box-sizing: border-box;
+}
+
+.cell {
+    width: var(--block-size);
+    height: var(--block-size);
+    margin: 0; 
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+/* 5. PREVIEW LOGIC (BIAR GAK SALAH TARO) */
+.cell.preview {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.cell.preview-invalid {
+    background: rgba(239, 68, 68, 0.2) !important;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* 6. GAME SIDEBAR */
+.game-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.game-sidebar .card {
+    margin: 0;
+    width: 100%;
+    padding: 20px !important;
+}
+
+.shapes-pick {
+    flex-grow: 1;
+    min-height: 450px;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    padding: 20px 0;
+}
+
+/* 7. RESPONSIVE MOBILE (FIXED BRACES) */
+@media (max-width: 1024px) {
+    :root {
+        --block-size: 10vw; 
+    }
+
+    .game-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .score-board {
+        max-width: 95vw;
+    }
+
+    .grid-board {
+        grid-template-columns: repeat(8, 10vw);
+        grid-template-rows: repeat(8, 10vw);
+        max-width: 95vw;
+    }
+
+    .shapes-pick {
+        flex-direction: row;
+        min-height: 150px;
+        overflow-x: auto;
+    }
+} 

@@ -372,15 +372,28 @@
       </section>
     </div>
 
-    <div id="view-blockblast" class="view-section" style="display: none;">
-      <section class="top-section">
+<div id="view-blockblast" class="view-section" style="display: none;">
+    
+    <!-- TOP SECTION: Judul & Leaderboard Sejajar -->
+    <section class="top-section">
+        <!-- Banner Judul -->
         <div class="card welcome-card">
-          <h1 style="font-family: var(--font-display); font-size: 2.2rem; background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Block Blast Royale</h1>
-          <p class="subtitle">Main santai, skor tinggi, ranking 1!</p>
+            <h1 style="font-family: var(--font-display); font-size: 2.2rem; background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Block Blitz</h1>
+            <p class="subtitle">Main santai, skor tinggi, ranking 1!</p>
         </div>
-      </section>
 
-      <div class="game-layout">
+        <!-- Leaderboard (Pindah ke samping judul) -->
+      <div class="leaderboard-card card">
+        <h3 class="card-title" style="font-size: 0.85rem; margin-bottom: 10px; border-bottom: 1px solid var(--glass-border); padding-bottom: 8px;">🏆 Global Rank</h3>
+        <ul id="game-leaderboard" class="rank-list" style="margin: 0; padding: 0; list-style: none;">
+          <li class="rank-item" style="font-size: 0.85rem; color: var(--text-muted);">Memuat data ranking...</li>
+        </ul>
+</div>
+    </section>
+
+    <!-- GAME LAYOUT: Board & Amunisi -->
+    <div class="game-layout">
+        <!-- Area Papan Game -->
         <div class="game-container card">
             <div class="score-board">
                 <div class="score-box">
@@ -388,27 +401,23 @@
                     <span id="current-score">0</span>
                 </div>
                 <div class="score-box">
-                    <p class="label">BEST</p>
-                    <span id="best-score">0</span>
+                  <p class="label">BEST</p>
+                  <span id="best-score">0</span>
                 </div>
             </div>
             <div id="game-board" class="grid-board"></div>
         </div>
 
+        <!-- Sidebar Amunisi -->
         <div class="game-sidebar">
             <div class="shapes-container card">
                 <p class="small-label">NEXT SHAPES</p>
                 <div id="shape-options" class="shapes-pick"></div>
             </div>
-            <div class="leaderboard-card card">
-                <h3 class="card-title">🏆 Global Rank</h3>
-                <ul id="game-leaderboard" class="rank-list">
-                    <li class="rank-item">Memuat data...</li>
-                </ul>
-            </div>
+            <!-- Leaderboard sudah tidak di sini lagi -->
         </div>
-      </div>
     </div>
+</div>
 
   </main>
 

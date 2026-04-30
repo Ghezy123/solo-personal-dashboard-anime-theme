@@ -95,15 +95,17 @@ body {
 /* ============================================
     SPA VIEW TRANSITIONS
     ============================================ */
+/* Update Baris 81 - 91 di style.css */
 .view-section {
   display: none;
   flex-direction: column;
-  gap: var(--gap);
+  gap: var(--gap); /* Gap ini butuh display: flex */
   animation: fadeIn 0.4s ease forwards;
+  width: 100%; /* Biar gak menciut */
 }
 
 .view-section.active {
-  display: flex;
+  display: flex !important; 
 }
 
 @keyframes fadeIn {

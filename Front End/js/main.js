@@ -39,32 +39,60 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ============================================
-// NAVIGATION LOGIC (The DRY Way)
+// NAVIGATION LOGIC (The Unified Way)
 // ============================================
 function initNavigation() {
-    const pages = ['home', 'schedule', 'spin'];
+    // 1. Daftar semua ID halaman yang lu punya di HTML
+    const pages = ['home', 'schedule', 'spin', 'blockblast'];
     
     pages.forEach(page => {
         const navBtn = document.getElementById(`nav-${page}`);
-        const viewSection = document.getElementById(`view-${page}`);
         
-        if (navBtn && viewSection) {
+        if (navBtn) {
             navBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 
-                // Reset semua halaman & menu
-                pages.forEach(p => {
-                    document.getElementById(`view-${p}`).style.display = 'none';
-                    document.getElementById(`nav-${p}`).classList.remove('active');
-                });
+                // 2. Jalankan fungsi pindah halaman
+                showView(`view-${page}`);
 
-                // Aktifkan yang dipilih
-                viewSection.style.display = (page === 'schedule') ? 'block' : 'flex';
+                // 3. Update status 'active' di sidebar
+                document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
                 navBtn.classList.add('active');
+
+                // 4. Khusus Jadwal: Highlight hari ini
                 if (page === 'schedule') highlightToday();
             });
         }
     });
+}
+
+function showView(viewId) {
+    const views = document.querySelectorAll('.view-section');
+
+    views.forEach(view => {
+        view.classList.remove('active');
+        view.style.display = 'none'; 
+    });
+
+    const activeView = document.getElementById(viewId);
+    if (activeView) {
+        activeView.classList.add('active');
+        
+        // --- KUNCI ANTI-MEPET ---
+        // Home lu aslinya pake Flex biar kartunya rapi, kita balikin di sini:
+        if (viewId === 'view-home') {
+            activeView.style.display = 'flex'; 
+            activeView.style.flexDirection = 'column'; // Biar tumpukannya bener
+            activeView.style.gap = '25px'; // Kasih jarak antar section
+        } else {
+            activeView.style.display = 'block';
+        }
+    }
+
+    // Trigger Game
+    if (viewId === 'view-blockblast') {
+        if (window.initBlockBlitz) window.initBlockBlitz();
+    }
 }
 
 
@@ -127,4 +155,42 @@ function highlightToday() {
     document.querySelectorAll('.day-card').forEach(c => c.classList.remove('today-active'));
     const today = document.getElementById(`day-${currentDay}`);
     if (today) today.classList.add('today-active');
+}
+
+// Tambahkan di dalam main.js lu
+const navBlockBlitz = document.getElementById('nav-blockblast');
+
+navBlockBlitz.addEventListener('click', (e) => {
+    e.preventDefault();
+    showView('view-blockblast'); // Fungsi buat ganti view yang lu punya
+    
+    // Panggil fungsi inisialisasi game
+    if (typeof initBlockBlitz === 'function') {
+        initBlockBlitz();
+    }
+});
+
+function showView(viewId) {
+    // 1. Ambil semua elemen yang punya class view-section
+    const views = document.querySelectorAll('.view-section');
+
+    // 2. Sembunyiin SEMUANYA dulu
+    views.forEach(view => {
+        view.classList.remove('active');
+        view.style.display = 'none'; 
+    });
+
+    // 3. Tampilkan cuma ID yang kita mau
+    const activeView = document.getElementById(viewId);
+    if (activeView) {
+        activeView.classList.add('active');
+        activeView.style.display = 'block';
+    }
+
+    // 4. Khusus buat Block Blitz, jalankan init cuma pas view-nya aktif
+    if (viewId === 'view-blockblast') {
+        if (window.initBlockBlitz) {
+            window.initBlockBlitz();
+        }
+    }
 }

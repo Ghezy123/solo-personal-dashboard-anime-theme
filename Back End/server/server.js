@@ -148,3 +148,34 @@ app.delete('/api/todos/:id', (req, res) => {
 app.listen(PORT, () => {
     console.log(`🚀 Server nyala di: http://localhost:${PORT}`);
 });
+
+// ============================================
+// 9. ROUTES - BLOCK BLITZ (LEADERBOARD)
+// ============================================
+
+// A. Ambil Top 3 Highscore
+app.get('/api/leaderboard', (req, res) => {
+    const query = 'SELECT username, block_blitz_highscore FROM users WHERE block_blitz_highscore > 0 ORDER BY block_blitz_highscore DESC LIMIT 3';
+    db.query(query, (err, results) => {
+        if (err) return res.status(500).json({ message: 'Gagal ambil leaderboard' });
+        res.json(results);
+    });
+});
+
+// B. Update Highscore (Cuma kalo skor baru lebih gede)
+app.post('/api/update-highscore', (req, res) => {
+    const { userId, score } = req.body;
+    
+    // Logika SQL: Update cuma kalau score baru > score lama
+    const query = 'UPDATE users SET block_blitz_highscore = ? WHERE id = ? AND ? > block_blitz_highscore';
+    
+    db.query(query, [score, userId, score], (err, result) => {
+        if (err) return res.status(500).json({ message: 'Error database' });
+        
+        if (result.affectedRows > 0) {
+            res.status(200).json({ message: 'New Highscore! 🔥' });
+        } else {
+            res.status(200).json({ message: 'Skor belum melampaui rekor lama.' });
+        }
+    });
+});
