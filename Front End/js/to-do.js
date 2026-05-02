@@ -2,7 +2,6 @@
 // TO-DO LIST (SUPABASE DIRECT VERSION)
 // ============================================
 
-
 function initTodoList() {
     console.log("🛠️ To-Do List Engine: ON (Direct to Supabase)");
 
@@ -23,12 +22,12 @@ function initTodoList() {
         if (!todoList) return;
 
         try {
-            // Langsung ambil dari tabel 'todos'
-            const { data: todos, error } = await supabase
+            // Memanggil global client dari window
+            const { data: todos, error } = await window.supabaseClient
                 .from('todos')
                 .select('*')
                 .eq('user_id', userId)
-                .order('created_at', { ascending: false }); // Urutin dari yang terbaru
+                .order('created_at', { ascending: false });
 
             if (error) throw error;
             
@@ -59,7 +58,7 @@ function initTodoList() {
         if (!text) return;
 
         try {
-            const { error } = await supabase
+            const { error } = await window.supabaseClient
                 .from('todos')
                 .insert([
                     { user_id: userId, task: text, status: 'pending' }
@@ -68,7 +67,7 @@ function initTodoList() {
             if (error) throw error;
 
             todoInput.value = '';
-            renderTodos(); // Refresh list
+            renderTodos(); 
         } catch (err) {
             alert("Gagal nambah tugas: " + err.message);
         }
@@ -79,7 +78,7 @@ function initTodoList() {
         const newStatus = currentStatus === 'pending' ? 'completed' : 'pending';
         
         try {
-            const { error } = await supabase
+            const { error } = await window.supabaseClient
                 .from('todos')
                 .update({ status: newStatus })
                 .eq('id', id);
@@ -96,7 +95,7 @@ function initTodoList() {
         if (!confirm("Hapus tugas ini?")) return;
 
         try {
-            const { error } = await supabase
+            const { error } = await window.supabaseClient
                 .from('todos')
                 .delete()
                 .eq('id', id);
@@ -119,7 +118,6 @@ function initTodoList() {
     renderTodos();
 }
 
-// Utility buat bersihin inputan (XSS Protection)
 function escapeHTML(str) {
     const div = document.createElement('div');
     div.textContent = str;

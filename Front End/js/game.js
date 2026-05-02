@@ -38,8 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (userId) {
             try {
-                // --- UPDATE: Ambil Best Score langsung dari Supabase ---
-                const { data, error } = await supabase
+                // UPDATE: Ambil Best Score via window.supabaseClient
+                const { data, error } = await window.supabaseClient
                     .from('users')
                     .select('block_blitz_highscore')
                     .eq('id', userId)
@@ -305,8 +305,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function updateLeaderboardUI() {
     try {
-        // --- UPDATE: Ambil Top 10 Leaderboard dari Supabase ---
-        const { data, error } = await supabase
+        // UPDATE: Gunakan window.supabaseClient untuk ambil Top 10
+        const { data, error } = await window.supabaseClient
             .from('users')
             .select('username, block_blitz_highscore')
             .order('block_blitz_highscore', { ascending: false })
@@ -333,15 +333,15 @@ async function saveGameScore(finalScore) {
     if (!userId) return;
 
     try {
-        // --- UPDATE: Simpan Skor Baru hanya jika lebih besar dari skor lama di DB ---
-        const { data: userData } = await supabase
+        // UPDATE: Gunakan window.supabaseClient untuk cek skor lama
+        const { data: userData } = await window.supabaseClient
             .from('users')
             .select('block_blitz_highscore')
             .eq('id', userId)
             .single();
 
         if (userData && finalScore > userData.block_blitz_highscore) {
-            const { error } = await supabase
+            const { error } = await window.supabaseClient
                 .from('users')
                 .update({ block_blitz_highscore: finalScore })
                 .eq('id', userId);

@@ -2,13 +2,15 @@
 // AUTHENTICATION LOGIC (DIRECT TO SUPABASE)
 // ============================================
 
-// 1. KONEKSI SUPABASE (Ganti isinya pake punya lu!)
+// 1. KONEKSI SUPABASE (Sudah menggunakan window.supabaseClient agar global)
 const supabaseUrl = 'https://wmbvudmycorbanrdnotz.supabase.co'; 
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtYnZ1ZG15Y29yYmFucmRub3R6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3MjczNjAsImV4cCI6MjA5MzMwMzM2MH0.JKtRCfMzkI3135TqRl0N4fEbDmGTJMuPWmRFaSkwoT4';
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+// Inisialisasi global
+window.supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 document.addEventListener('DOMContentLoaded', () => {
-    // DOM Elements (Tetap sama)
+    // DOM Elements
     const btnLogin = document.getElementById('btn-show-login');
     const btnRegister = document.getElementById('btn-show-register');
     const formLogin = document.getElementById('login-form');
@@ -17,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const formSubtitle = document.getElementById('form-subtitle');
     const alertBox = document.getElementById('auth-alert');
 
-    // UI Logic (Switching tab tetap sama)
+    // UI Logic
     btnRegister.addEventListener('click', () => {
         btnLogin.classList.remove('active');
         btnRegister.classList.add('active');
@@ -44,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 1. HANDLE REGISTER (Tanpa Server.js)
+    // 1. HANDLE REGISTER (Menggunakan supabaseClient)
     // ==========================================
     formRegister.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -61,14 +63,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Langsung masukin ke tabel 'users' di Supabase
-            const { data, error } = await supabase
+            const { data, error } = await supabaseClient
                 .from('users')
                 .insert([
                     { username, email, password, block_blitz_highscore: 0 }
                 ]);
 
             if (error) {
-                // Biasanya error kalau email/username duplikat
                 showAlert("Gagal daftar: " + error.message);
             } else {
                 showAlert("Akun berhasil dibuat! Silakan Login.", true);
@@ -83,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================
-    // 2. HANDLE LOGIN (Tanpa Server.js)
+    // 2. HANDLE LOGIN (Menggunakan supabaseClient)
     // ==========================================
     formLogin.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -93,19 +94,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Cari user yang username DAN password-nya cocok
-            const { data, error } = await supabase
+            const { data, error } = await supabaseClient
                 .from('users')
                 .select('*')
                 .eq('username', username)
                 .eq('password', password)
-                .single(); // Ambil 1 data aja
+                .single(); 
 
             if (error || !data) {
                 showAlert("Username atau Password salah!");
             } else {
                 showAlert("Login sukses! Masuk ke dashboard...", true);
                 
-                // Simpan ke LocalStorage biar halaman lain tau siapa yang login
                 localStorage.setItem('userId', data.id); 
                 localStorage.setItem('activeUser', data.username); 
                 localStorage.setItem('profilePic', data.profile_pic || ''); 

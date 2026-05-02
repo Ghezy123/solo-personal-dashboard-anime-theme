@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 1. RENDER PROFIL ---
     async function renderProfile() {
-        // Ambil data terbaru dari Supabase biar sinkron
-        const { data: user, error } = await supabase
+        // Memanggil window.supabaseClient agar sinkron
+        const { data: user, error } = await window.supabaseClient
             .from('users')
             .select('username, profile_pic')
             .eq('id', userId)
@@ -29,14 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (mainAvatar) mainAvatar.src = finalPic;
             if (settingsAvatar) settingsAvatar.src = finalPic;
             
-            // Update localStorage juga biar konsisten
             localStorage.setItem('activeUser', user.username);
             localStorage.setItem('profilePic', finalPic);
         }
     }
     renderProfile();
 
-    // --- 2. MODAL SETTINGS (Tetap Sama) ---
+    // --- 2. MODAL SETTINGS ---
     const modal = document.getElementById('settings-modal');
     const btnOpen = document.getElementById('btn-open-settings');
     const btnClose = document.getElementById('btn-close-settings');
@@ -54,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === modal) modal.classList.remove('active');
     });
 
-    // --- 3. FITUR UPLOAD FOTO (Ganti Multer ke Supabase Storage) ---
+    // --- 3. FITUR UPLOAD FOTO ---
     const avatarInput = document.getElementById('avatar-upload');
     if (avatarInput) {
         avatarInput.addEventListener('change', async (e) => {
@@ -62,23 +61,23 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!file) return;
 
             try {
-                // A. Upload file ke Bucket 'avatars'
+                // A. Upload file ke Bucket 'avatars' lewat supabaseClient
                 const fileName = `${userId}-${Date.now()}.${file.name.split('.').pop()}`;
-                const { data: uploadData, error: uploadError } = await supabase.storage
+                const { data: uploadData, error: uploadError } = await window.supabaseClient.storage
                     .from('avatars')
                     .upload(fileName, file);
 
                 if (uploadError) throw uploadError;
 
                 // B. Ambil URL Public-nya
-                const { data: urlData } = supabase.storage
+                const { data: urlData } = window.supabaseClient.storage
                     .from('avatars')
                     .getPublicUrl(fileName);
 
                 const publicUrl = urlData.publicUrl;
 
                 // C. Update kolom profile_pic di tabel users
-                const { error: updateError } = await supabase
+                const { error: updateError } = await window.supabaseClient
                     .from('users')
                     .update({ profile_pic: publicUrl })
                     .eq('id', userId);
@@ -99,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnLogout) {
         btnLogout.addEventListener('click', () => {
             if(confirm("Yakin mau keluar dari dashboard?")) {
-                localStorage.clear(); // Bersihin semua data login
+                localStorage.clear(); 
                 window.location.href = "login.html";
             }
         });
@@ -111,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnRemoveAvatar.addEventListener('click', async () => {
             if (confirm('Balikin ke foto profil default?')) {
                 try {
-                    const { error } = await supabase
+                    const { error } = await window.supabaseClient
                         .from('users')
                         .update({ profile_pic: null })
                         .eq('id', userId);
