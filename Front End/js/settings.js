@@ -1,122 +1,132 @@
 // ============================================
-// LOGIC SETTINGS (MODAL, UPLOAD FOTO, LOGOUT)
+// LOGIC SETTINGS (MODAL, SUPABASE STORAGE, LOGOUT)
 // ============================================
 
+// 1. KONEKSI SUPABASE
+const supabaseUrl = 'https://wmbvudmycorbanrdnotz.supabase.co';
+const supabaseKey = 'MASUKKIN_ANON_KEY_LU_DI_SINI';
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
 document.addEventListener('DOMContentLoaded', () => {
-  const activeUser = localStorage.getItem('activeUser');
-  const userId = localStorage.getItem('userId');
-  let savedPic = localStorage.getItem(`profilePic_${userId}`);
-
-  // --- 1. RENDER PROFIL (NAMA & FOTO) ---
-  function renderProfile() {
-    if (activeUser) {
-      const sidebarName = document.getElementById('display-sidebar-name');
-      const greetingName = document.getElementById('display-greeting-name');
-      if (sidebarName) sidebarName.textContent = activeUser;
-      if (greetingName) greetingName.textContent = activeUser;
-    }
-    if (savedPic) {
-      const mainAvatar = document.getElementById('profile-img-display');
-      const settingsAvatar = document.getElementById('settings-avatar-preview');
-      if (mainAvatar) mainAvatar.src = savedPic;
-      if (settingsAvatar) settingsAvatar.src = savedPic;
-    }
-  }
-  // Panggil eksekusi pas halaman diload
-  renderProfile();
-
-  // --- 2. MODAL SETTINGS (BUKA/TUTUP) ---
-  const modal = document.getElementById('settings-modal');
-  const btnOpen = document.getElementById('btn-open-settings');
-  const btnClose = document.getElementById('btn-close-settings');
-
-  if (btnOpen) {
-    btnOpen.addEventListener('click', (e) => {
-      e.preventDefault(); // Biar layar ga lompat ke atas pas diklik
-      modal.classList.add('active');
-    });
-  }
-  if (btnClose) {
-    btnClose.addEventListener('click', () => modal.classList.remove('active'));
-  }
-  
-  // Nutup modal kalau klik area kosong di luar kotak
-  window.addEventListener('click', (e) => {
-    if (e.target === modal) modal.classList.remove('active');
-  });
-
-  // --- 3. FITUR UPLOAD FOTO ---
-  const avatarInput = document.getElementById('avatar-upload');
-  if (avatarInput) {
-    avatarInput.addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const formData = new FormData();
-      formData.append('avatar', file);
-      formData.append('username', activeUser);
-
-      try {
-        const response = await fetch('http://localhost:3000/api/upload-avatar', {
-          method: 'POST',
-          body: formData 
-        });
-        const result = await response.json();
-
-        if (response.ok) {
-          localStorage.setItem(`profilePic_${userId}`, result.profile_pic);  
-          savedPic = result.profile_pic; 
-          renderProfile(); // Langsung render fotonya di layar
-          alert("Gilaa, foto profil lu berhasil diganti! 🔥");
-        } else {
-          alert("Gagal update: " + result.message);
-        }
-      } catch (error) {
-        console.error(error);
-        alert("Server error bro, pastiin Nodemon lu nyala!");
-      }
-    });
-  }
-
-  // --- 4. FITUR LOGOUT ---
-  const btnLogout = document.getElementById('btn-logout');
-  if (btnLogout) {
-    btnLogout.addEventListener('click', () => {
-      // Munculin alert konfirmasi biar ga ga sengaja kepencet
-      const isSure = confirm("Yakin mau keluar dari dashboard?");
-      if(isSure) {
-        // Hapus semua tiket
-        localStorage.removeItem('isLoggedIn');
-        localStorage.removeItem('activeUser');
-        
-        window.location.href = "login.html";
-      }
-    });
-  }
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    const btnRemoveAvatar = document.getElementById('btn-remove-avatar');
-    const profileImg = document.getElementById('profile-img-display'); // Foto di Sidebar
-    const previewImg = document.getElementById('settings-avatar-preview'); // Foto di Settings
-    
-    // Alamat foto default lu
+    const activeUser = localStorage.getItem('activeUser');
+    const userId = localStorage.getItem('userId');
     const defaultAvatar = 'img/icon kosong.png';
 
+    // --- 1. RENDER PROFIL ---
+    async function renderProfile() {
+        // Ambil data terbaru dari Supabase biar sinkron
+        const { data: user, error } = await supabase
+            .from('users')
+            .select('username, profile_pic')
+            .eq('id', userId)
+            .single();
+
+        if (user) {
+            const sidebarName = document.getElementById('display-sidebar-name');
+            const greetingName = document.getElementById('display-greeting-name');
+            const mainAvatar = document.getElementById('profile-img-display');
+            const settingsAvatar = document.getElementById('settings-avatar-preview');
+
+            if (sidebarName) sidebarName.textContent = user.username;
+            if (greetingName) greetingName.textContent = user.username;
+
+            const finalPic = user.profile_pic || defaultAvatar;
+            if (mainAvatar) mainAvatar.src = finalPic;
+            if (settingsAvatar) settingsAvatar.src = finalPic;
+            
+            // Update localStorage juga biar konsisten
+            localStorage.setItem('activeUser', user.username);
+            localStorage.setItem('profilePic', finalPic);
+        }
+    }
+    renderProfile();
+
+    // --- 2. MODAL SETTINGS (Tetap Sama) ---
+    const modal = document.getElementById('settings-modal');
+    const btnOpen = document.getElementById('btn-open-settings');
+    const btnClose = document.getElementById('btn-close-settings');
+
+    if (btnOpen) {
+        btnOpen.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal.classList.add('active');
+        });
+    }
+    if (btnClose) {
+        btnClose.addEventListener('click', () => modal.classList.remove('active'));
+    }
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.remove('active');
+    });
+
+    // --- 3. FITUR UPLOAD FOTO (Ganti Multer ke Supabase Storage) ---
+    const avatarInput = document.getElementById('avatar-upload');
+    if (avatarInput) {
+        avatarInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            try {
+                // A. Upload file ke Bucket 'avatars'
+                const fileName = `${userId}-${Date.now()}.${file.name.split('.').pop()}`;
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from('avatars')
+                    .upload(fileName, file);
+
+                if (uploadError) throw uploadError;
+
+                // B. Ambil URL Public-nya
+                const { data: urlData } = supabase.storage
+                    .from('avatars')
+                    .getPublicUrl(fileName);
+
+                const publicUrl = urlData.publicUrl;
+
+                // C. Update kolom profile_pic di tabel users
+                const { error: updateError } = await supabase
+                    .from('users')
+                    .update({ profile_pic: publicUrl })
+                    .eq('id', userId);
+
+                if (updateError) throw updateError;
+
+                renderProfile(); 
+                alert("Gilaa, foto profil lu berhasil diganti ke cloud! 🔥");
+            } catch (error) {
+                console.error(error);
+                alert("Gagal update foto: " + error.message);
+            }
+        });
+    }
+
+    // --- 4. FITUR LOGOUT ---
+    const btnLogout = document.getElementById('btn-logout');
+    if (btnLogout) {
+        btnLogout.addEventListener('click', () => {
+            if(confirm("Yakin mau keluar dari dashboard?")) {
+                localStorage.clear(); // Bersihin semua data login
+                window.location.href = "login.html";
+            }
+        });
+    }
+
+    // --- 5. HAPUS FOTO (RESET KE DEFAULT) ---
+    const btnRemoveAvatar = document.getElementById('btn-remove-avatar');
     if (btnRemoveAvatar) {
-        btnRemoveAvatar.addEventListener('click', function() {
-            // Munculin konfirmasi biar gak typo pencet
+        btnRemoveAvatar.addEventListener('click', async () => {
             if (confirm('Balikin ke foto profil default?')) {
-                
-                // 1. Ubah tampilan secara instan
-                profileImg.src = defaultAvatar;
-                previewImg.src = defaultAvatar;
+                try {
+                    const { error } = await supabase
+                        .from('users')
+                        .update({ profile_pic: null })
+                        .eq('id', userId);
 
-                // 2. Hapus data dari LocalStorage
-                // (Pastiin 'user-avatar' ini namanya sama dengan yang lu pake buat simpen foto)
-                localStorage.removeItem('user-avatar');
-
-                alert('Foto profil berhasil di-reset!');
+                    if (error) throw error;
+                    renderProfile();
+                    alert('Foto profil berhasil di-reset!');
+                } catch (error) {
+                    alert('Gagal reset foto: ' + error.message);
+                }
             }
         });
     }

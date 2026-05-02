@@ -1,25 +1,40 @@
 // ============================================
-// TO-DO LIST (DATABASE & MULTI-USER VERSION)
+// TO-DO LIST (SUPABASE DIRECT VERSION)
 // ============================================
 
+// 1. KONEKSI SUPABASE (Pastiin isinya bener ya!)
+const supabaseUrl = 'https://wmbvudmycorbanrdnotz.supabase.co';
+const supabaseKey = 'MASUKKIN_ANON_KEY_LU_DI_SINI';
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
 function initTodoList() {
-    console.log("🛠️ To-Do List Engine: ON (Connected to Backend)");
+    console.log("🛠️ To-Do List Engine: ON (Direct to Supabase)");
 
     const todoInput = document.getElementById('todo-input');
     const addBtn = document.getElementById('add-todo-btn');
     const todoList = document.getElementById('todo-list');
     
-    // 1. Ambil ID User dari localStorage yang kita dapet pas login
-    // Kalo ga ada (buat ngetes), kita default ke user ID 1
-    const userId = localStorage.getItem('userId') || 1;
+    // Ambil ID User dari localStorage
+    const userId = localStorage.getItem('userId');
+
+    if (!userId) {
+        console.error("User ID tidak ditemukan. Silakan login dulu!");
+        return;
+    }
 
     // --- FUNGSI TAMPILIN DATA (READ) ---
     async function renderTodos() {
         if (!todoList) return;
 
         try {
-            const response = await fetch(`http://localhost:3000/api/todos/${userId}`);
-            const todos = await response.json();
+            // Langsung ambil dari tabel 'todos'
+            const { data: todos, error } = await supabase
+                .from('todos')
+                .select('*')
+                .eq('user_id', userId)
+                .order('created_at', { ascending: false }); // Urutin dari yang terbaru
+
+            if (error) throw error;
             
             todoList.innerHTML = '';
 
@@ -27,7 +42,6 @@ function initTodoList() {
                 const li = document.createElement('li');
                 li.className = `todo-item ${todo.status === 'completed' ? 'completed' : ''}`;
 
-                // Kita pake data-id asli dari database (bukan index array)
                 li.innerHTML = `
                     <div class="todo-content">
                         <input type="checkbox" ${todo.status === 'completed' ? 'checked' : ''} 
@@ -39,7 +53,7 @@ function initTodoList() {
                 todoList.appendChild(li);
             });
         } catch (err) {
-            console.error("❌ Gagal ngerender list. Pastikan server Node.js nyala!", err);
+            console.error("❌ Gagal ambil data dari Supabase:", err.message);
         }
     }
 
@@ -49,21 +63,18 @@ function initTodoList() {
         if (!text) return;
 
         try {
-            const response = await fetch('http://localhost:3000/api/todos', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    user_id: userId, 
-                    task: text 
-                })
-            });
+            const { error } = await supabase
+                .from('todos')
+                .insert([
+                    { user_id: userId, task: text, status: 'pending' }
+                ]);
 
-            if (response.ok) {
-                todoInput.value = '';
-                renderTodos(); // Refresh list setelah nambah
-            }
+            if (error) throw error;
+
+            todoInput.value = '';
+            renderTodos(); // Refresh list
         } catch (err) {
-            alert("Gagal konek ke server pas nambah tugas!");
+            alert("Gagal nambah tugas: " + err.message);
         }
     }
 
@@ -72,29 +83,32 @@ function initTodoList() {
         const newStatus = currentStatus === 'pending' ? 'completed' : 'pending';
         
         try {
-            await fetch(`http://localhost:3000/api/todos/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: newStatus })
-            });
+            const { error } = await supabase
+                .from('todos')
+                .update({ status: newStatus })
+                .eq('id', id);
+
+            if (error) throw error;
             renderTodos();
         } catch (err) {
-            console.error("Gagal update status!");
+            console.error("Gagal update status:", err.message);
         }
     };
 
     // --- FUNGSI HAPUS (DELETE) ---
     window.deleteTodo = async (id) => {
-        // Gak pake confirm biar sat set sat set, atau kasih confirm kalo takut salah pencet
         if (!confirm("Hapus tugas ini?")) return;
 
         try {
-            await fetch(`http://localhost:3000/api/todos/${id}`, {
-                method: 'DELETE'
-            });
+            const { error } = await supabase
+                .from('todos')
+                .delete()
+                .eq('id', id);
+
+            if (error) throw error;
             renderTodos();
         } catch (err) {
-            console.error("Gagal menghapus tugas!");
+            console.error("Gagal hapus tugas:", err.message);
         }
     };
 
@@ -106,13 +120,10 @@ function initTodoList() {
         });
     }
 
-    // Jalankan render pertama kali pas halaman dibuka
     renderTodos();
 }
 
-// ============================================
-// UTILITY FUNCTIONS
-// ============================================
+// Utility buat bersihin inputan (XSS Protection)
 function escapeHTML(str) {
     const div = document.createElement('div');
     div.textContent = str;
