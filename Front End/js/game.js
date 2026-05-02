@@ -2,11 +2,6 @@
    BLOCK BLITZ - GAME LOGIC (DIRECT SUPABASE VERSION)
    ================================================================ */
 
-// 1. INISIALISASI SUPABASE
-const supabaseUrl = 'https://wmbvudmycorbanrdnotz.supabase.co';
-const supabaseKey = 'MASUKKIN_ANON_KEY_LU_DI_SINI';
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
 document.addEventListener('DOMContentLoaded', () => {
     const boardElement = document.getElementById('game-board');
     const shapeOptions = document.getElementById('shape-options');

@@ -2,11 +2,6 @@
 // LOGIC SETTINGS (MODAL, SUPABASE STORAGE, LOGOUT)
 // ============================================
 
-// 1. KONEKSI SUPABASE
-const supabaseUrl = 'https://wmbvudmycorbanrdnotz.supabase.co';
-const supabaseKey = 'MASUKKIN_ANON_KEY_LU_DI_SINI';
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
 document.addEventListener('DOMContentLoaded', () => {
     const activeUser = localStorage.getItem('activeUser');
     const userId = localStorage.getItem('userId');

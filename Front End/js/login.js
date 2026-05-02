@@ -4,7 +4,7 @@
 
 // 1. KONEKSI SUPABASE (Ganti isinya pake punya lu!)
 const supabaseUrl = 'https://wmbvudmycorbanrdnotz.supabase.co'; 
-const supabaseKey = 'MASUKKIN_ANON_KEY_LU_DI_SINI';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtYnZ1ZG15Y29yYmFucmRub3R6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3MjczNjAsImV4cCI6MjA5MzMwMzM2MH0.JKtRCfMzkI3135TqRl0N4fEbDmGTJMuPWmRFaSkwoT4';
 const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
 document.addEventListener('DOMContentLoaded', () => {

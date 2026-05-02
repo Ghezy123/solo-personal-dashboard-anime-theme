@@ -2,10 +2,6 @@
 // TO-DO LIST (SUPABASE DIRECT VERSION)
 // ============================================
 
-// 1. KONEKSI SUPABASE (Pastiin isinya bener ya!)
-const supabaseUrl = 'https://wmbvudmycorbanrdnotz.supabase.co';
-const supabaseKey = 'MASUKKIN_ANON_KEY_LU_DI_SINI';
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
 function initTodoList() {
     console.log("🛠️ To-Do List Engine: ON (Direct to Supabase)");
