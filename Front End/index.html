@@ -463,11 +463,20 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/mobile-drag-drop@2.3.0/index.min.js"></script>
+  
   <script>
     MobileDragDrop.polyfill({
-        holdToDrag: 150 
+        holdToDrag: 100, 
+        dragImageTranslateOverride: MobileDragDrop.scrollBehaviourDragImageTranslateOverride
     });
-  </script>
+
+    // Tambahan biar nggak konflik sama scroll standar
+    window.addEventListener("touchmove", function(e) {
+        if (e.target.closest('.shape-item')) {
+            e.preventDefault();
+        }
+    }, { passive: false });
+</script>
 
   <script src="js/login.js"></script>
   <script src="js/to-do.js"></script>

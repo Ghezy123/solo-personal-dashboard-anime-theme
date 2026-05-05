@@ -168,3 +168,14 @@
         overflow-x: auto;
     }
 } 
+
+.shape-item, .cell, .shapes-pick {
+    touch-action: none !important; 
+    -webkit-user-select: none; 
+    user-select: none;
+    -webkit-tap-highlight-color: transparent; 
+}
+
+.shape-item div {
+    pointer-events: none;   
+}
