@@ -1,5 +1,5 @@
 /* ================================================================
-   BLOCK BLITZ - GAME LOGIC (DIRECT SUPABASE VERSION)
+   BLOCK BLITZ - GAME LOGIC (DIRECT SUPABASE VERSION - MOBILE SUPPORTED)
    ================================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -13,7 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let score = 0;
     let bestScore = 0; 
 
-    // Variasi bentuk (Logic tetap)
+    // Variabel bantu untuk Drag and Drop
+    let currentDraggedElement = null;
+    let currentDraggedData = null;
+    let dragOffsetR = 0;
+    let dragOffsetC = 0;
+
     const SHAPES = [
         { matrix: [[1]], color: '#6366f1' },
         { matrix: [[1]], color: '#6366f1' },
@@ -38,7 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (userId) {
             try {
-                // UPDATE: Ambil Best Score via window.supabaseClient
                 const { data, error } = await window.supabaseClient
                     .from('users')
                     .select('block_blitz_highscore')
@@ -56,10 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
         bestScoreDisplay.innerText = bestScore;
         updateLeaderboardUI();
     }
-
-    // ==========================================
-    // LOGIC GAMEPLAY (TIDAK DIUBAH)
-    // ==========================================
 
     function createBoard() {
         boardElement.innerHTML = '';
@@ -118,12 +118,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     block.style.height = cellSize;
                     block.style.borderRadius = '4px';
                     block.style.backgroundColor = value === 1 ? shapeData.color : 'transparent';
+                    
                     if (value === 1) {
                         block.style.boxShadow = `inset 0 0 5px rgba(0,0,0,0.3)`;
+                        
+                        // Input Mousedown (Laptop)
                         block.addEventListener('mousedown', () => {
                             dragOffsetR = rIdx;
                             dragOffsetC = cIdx;
                         });
+
+                        // UPDATE: Input Touchstart (Mobile)
+                        block.addEventListener('touchstart', () => {
+                            dragOffsetR = rIdx;
+                            dragOffsetC = cIdx;
+                        }, { passive: true });
                     }
                     wrapper.appendChild(block);
                 });
@@ -305,7 +314,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function updateLeaderboardUI() {
     try {
-        // UPDATE: Gunakan window.supabaseClient untuk ambil Top 10
         const { data, error } = await window.supabaseClient
             .from('users')
             .select('username, block_blitz_highscore')
@@ -333,7 +341,6 @@ async function saveGameScore(finalScore) {
     if (!userId) return;
 
     try {
-        // UPDATE: Gunakan window.supabaseClient untuk cek skor lama
         const { data: userData } = await window.supabaseClient
             .from('users')
             .select('block_blitz_highscore')
